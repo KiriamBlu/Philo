@@ -68,9 +68,7 @@ void *managment(void *prueba)
 {
 	philo *ph;
 	ph = (philo *)prueba;
-	gettimeofday(&ph->lst.reftime, NULL);
-	ph->lasttime = ((unsigned long)ph->lst.reftime.tv_sec * 1000) + ((unsigned long)ph->lst.reftime.tv_usec / 1000);
-	ph->lst.firsttime = ph->lasttime;
+	ph->lasttime = ph->lst.firsttime;
 	if (ph->index % 2 == 0)
 			usleep(100);
 	while(1)
@@ -162,6 +160,8 @@ int main(int argc, char const *argv[])
 	philo_gen.timetoeat = (ft_atoi_special(argv[3]) * 1000);
 	philo_gen.timetosleep = (ft_atoi_special(argv[4]) * 1000);
 	philo_gen.deathstatus = 0;
+	gettimeofday(&philo_gen.reftime, NULL);
+	philo_gen.firsttime = ((unsigned long)philo_gen.reftime.tv_sec * 1000) + ((unsigned long)philo_gen.reftime.tv_usec / 1000);
 	philo_gen.forks = malloc(sizeof(pthread_mutex_t) * philo_gen.philo_num);
 	ph = malloc(sizeof(philo) * philo_gen.philo_num);
 	i = -1;
@@ -170,7 +170,5 @@ int main(int argc, char const *argv[])
 		pthread_create(&ph[i].thread, NULL, managment, &ph[i]);
 	while(1)
 		;
-	printf("ALL DONE");
-	usleep(100000);
 	return 0;
 }
