@@ -37,6 +37,15 @@ unsigned long ft_atoi_special_l(const char *str)
 	return (nb);
 }
 
+unsigned long timestamp(philo *ph)
+{
+	unsigned long i;
+
+	gettimeofday(&ph->lst.reftime, NULL);
+	i = ((unsigned long)ph->lst.reftime.tv_sec * 1000) + ((unsigned long)ph->lst.reftime.tv_usec / 1000);
+	return(i - ph->lst.firsttime);
+}
+
 void getupdatetime(philo  *ph)
 {
 	unsigned long i;
@@ -59,15 +68,16 @@ void *managment(void *prueba)
 {
 	philo *ph;
 	ph = (philo *)prueba;
-	if (ph->index % 2 == 0)
-			usleep(100);
 	gettimeofday(&ph->lst.reftime, NULL);
 	ph->lasttime = ((unsigned long)ph->lst.reftime.tv_sec * 1000) + ((unsigned long)ph->lst.reftime.tv_usec / 1000);
+	ph->lst.firsttime = ph->lasttime;
+	if (ph->index % 2 == 0)
+			usleep(100);
 	while(1)
 	{
-		printf("Philo:%d is thinking\n", ph->index);
+		printf("Philo:%d is thinking %lu\n", ph->index, timestamp(ph));
 		pthread_mutex_lock(ph->left);
-		printf("Philo:%d left pick\n", ph->index);
+		printf("Philo:%d left pick %lu\n", ph->index, timestamp(ph));
 		if (ph->lst.deathtime <= checktime(ph))
 		{
 			ph->lst.deathstatus = 1;
@@ -76,9 +86,7 @@ void *managment(void *prueba)
 		if (ph->lst.deathstatus != 0)
 			return(0);
 		pthread_mutex_lock(ph->right);
-		printf("Philo:%d right pick\n", ph->index);
-		getupdatetime(ph);
-		printf("Philo:%D TARDA:%lu\n", ph->index,ph->phdeath);
+		printf("Philo:%d right pick %lu\n", ph->index, timestamp(ph));
 		if (ph->lst.deathtime <= checktime(ph))
 		{
 			ph->lst.deathstatus = 1;
@@ -86,7 +94,8 @@ void *managment(void *prueba)
 		}
 		if (ph->lst.deathstatus != 0)
 			return(0);
-		printf("Philo:%d is eating\n", ph->index);
+		getupdatetime(ph);
+		printf("Philo:%d is eating %lu\n", ph->index, timestamp(ph));
 		usleep(ph->lst.timetoeat);
 		if (ph->lst.deathtime <= checktime(ph))
 		{
@@ -96,10 +105,10 @@ void *managment(void *prueba)
 		if (ph->lst.deathstatus != 0)
 			return(0);
 		pthread_mutex_unlock(ph->left);
-		printf("Philo:%d left drop\n", ph->index);
+		printf("Philo:%d left drop %lu\n", ph->index, timestamp(ph));
 		pthread_mutex_unlock(ph->right);
-		printf("Philo:%d right drop\n", ph->index);
-		printf("Philo:%d is sleeping\n", ph->index);
+		printf("Philo:%d right drop %lu\n", ph->index, timestamp(ph));
+		printf("Philo:%d is sleeping %lu\n", ph->index, timestamp(ph));
 		usleep(ph->lst.timetosleep);
 		if (ph->lst.deathtime <= checktime(ph))
 		{

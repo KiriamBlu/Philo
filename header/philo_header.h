@@ -26,6 +26,7 @@ typedef struct t_mutex
 	struct timeval reftime;
 	int deathstatus;
 	unsigned long deathtime;
+	unsigned long firsttime;
 	int timetosleep;
 	int timetoeat;
 }gen;
