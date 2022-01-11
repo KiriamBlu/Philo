@@ -16,13 +16,43 @@
 #include <pthread.h>
 # include"../header/philo_header.h"
 
+unsigned long ft_atoi_special_l(const char *str)
+{
+	int				i[2];
+	unsigned long	nb;
+
+	i[0] = 0;
+	i[1] = 0;
+	nb = 0;
+	while (str[i[0]] == ' ' || str[i[0]] == '\n' || str[i[0]] == '\t' \
+			|| str[i[0]] == '\f' || str[i[0]] == '\v' || str[i[0]] == '\r')
+		i[0]++;
+	while (str[i[0]] >= '0' && str[i[0]] <= '9')
+		nb = (nb * 10) + (str[i[0]++] - '0');
+	if ((nb > 2147483647 && i[1] == 0) || (nb > 2147483648 && i[1] == 1))
+	{
+		write(1, "Error\n", 6);
+		exit (0);
+	}
+	return (nb);
+}
+
 void getupdatetime(philo  *ph)
 {
 	unsigned long i;
 
 	gettimeofday(&ph->lst.reftime, NULL);
 	i = ((unsigned long)ph->lst.reftime.tv_sec * 1000) + ((unsigned long)ph->lst.reftime.tv_usec / 1000);
-	ph->lasttime = i - ph->lst.time;
+	ph->phdeath = i - ph->lasttime;
+	ph->lasttime = i;
+}
+unsigned long checktime(philo *ph)
+{
+	unsigned long i;
+
+	gettimeofday(&ph->lst.reftime, NULL);
+	i = ((unsigned long)ph->lst.reftime.tv_sec * 1000) + ((unsigned long)ph->lst.reftime.tv_usec / 1000);
+	return(i - ph->lasttime);
 }
 
 void *managment(void *prueba)
@@ -31,17 +61,53 @@ void *managment(void *prueba)
 	ph = (philo *)prueba;
 	if (ph->index % 2 == 0)
 			usleep(100);
+	gettimeofday(&ph->lst.reftime, NULL);
+	ph->lasttime = ((unsigned long)ph->lst.reftime.tv_sec * 1000) + ((unsigned long)ph->lst.reftime.tv_usec / 1000);
 	while(1)
 	{
-		getupdatetime(ph);
-		printf("Timecheck:%lu\n", ph->lasttime);
+		printf("Philo:%d is thinking\n", ph->index);
 		pthread_mutex_lock(ph->left);
 		printf("Philo:%d left pick\n", ph->index);
+		if (ph->lst.deathtime <= checktime(ph))
+		{
+			ph->lst.deathstatus = 1;
+			printf("Philo:%d is DEAD after pick left: %lu\n", ph->index, checktime(ph));
+		}
+		if (ph->lst.deathstatus != 0)
+			return(0);
 		pthread_mutex_lock(ph->right);
 		printf("Philo:%d right pick\n", ph->index);
+		getupdatetime(ph);
+		printf("Philo:%D TARDA:%lu\n", ph->index,ph->phdeath);
+		if (ph->lst.deathtime <= checktime(ph))
+		{
+			ph->lst.deathstatus = 1;
+			printf("Philo:%d is DEAD after pick right: %lu\n", ph->index, checktime(ph));
+		}
+		if (ph->lst.deathstatus != 0)
+			return(0);
+		printf("Philo:%d is eating\n", ph->index);
+		usleep(ph->lst.timetoeat);
+		if (ph->lst.deathtime <= checktime(ph))
+		{
+			ph->lst.deathstatus = 1;
+			printf("Philo:%d is DEAD after eating: %lu\n", ph->index, checktime(ph));
+		}
+		if (ph->lst.deathstatus != 0)
+			return(0);
 		pthread_mutex_unlock(ph->left);
+		printf("Philo:%d left drop\n", ph->index);
 		pthread_mutex_unlock(ph->right);
-		usleep(1000);
+		printf("Philo:%d right drop\n", ph->index);
+		printf("Philo:%d is sleeping\n", ph->index);
+		usleep(ph->lst.timetosleep);
+		if (ph->lst.deathtime <= checktime(ph))
+		{
+			ph->lst.deathstatus = 1;
+			printf("Philo:%d is DEAD after sleeping: %lu\n", ph->index, checktime(ph));
+		}
+		if (ph->lst.deathstatus != 0)
+			return(0);
 	}
 	return (0);
 }
@@ -53,17 +119,17 @@ void phinit(philo *ph, gen *philo_gen)
 	i = 0;
 	while(i < philo_gen->philo_num - 1)
 	{
-		pthread_mutex_init(&philo_gen->forks[i], NULL);
+		if (i == 0)
+			pthread_mutex_init(&philo_gen->forks[0], NULL);
 		pthread_mutex_init(&philo_gen->forks[i + 1], NULL);
 		ph[i].left = &philo_gen->forks[i];
 		ph[i].right = &philo_gen->forks[i + 1];
 		ph[i].lst = *philo_gen;
 		ph[i].index = i;
 		ph[i].thread = malloc(sizeof(pthread_t) * 1);
-		ph[i].lasttime = 0;
 		i++;
 	}
-	pthread_mutex_init(&philo_gen->forks[i], NULL);
+	pthread_mutex_init(&philo_gen->forks[philo_gen->philo_num - 1], NULL);
 	ph[i].left = &philo_gen->forks[i];
 	ph[i].right = &philo_gen->forks[0];
 	ph[i].lst = *philo_gen;
@@ -77,22 +143,25 @@ int main(int argc, char const *argv[])
 	philo  *ph;
 	int i;
 
-	if(argc < 2 | gettimeofday(&philo_gen.reftime, NULL) == -1)
+	if(argc < 4  || argc > 5)
 	{
 		printf("ERROR\n");
 		return(0);
 	}
-	philo_gen.time = ((unsigned long)philo_gen.reftime.tv_sec * 1000) + ((unsigned long)philo_gen.reftime.tv_usec / 1000);
-	printf("%lu\n", philo_gen.time);
-	philo_gen.philo_num = ft_atoi_special(argv[1]);
+	philo_gen.philo_num = ft_atoi_special(argv[1]) ;
+	philo_gen.deathtime = (ft_atoi_special_l(argv[2]));
+	philo_gen.timetoeat = (ft_atoi_special(argv[3]) * 1000);
+	philo_gen.timetosleep = (ft_atoi_special(argv[4]) * 1000);
+	philo_gen.deathstatus = 0;
 	philo_gen.forks = malloc(sizeof(pthread_mutex_t) * philo_gen.philo_num);
 	ph = malloc(sizeof(philo) * philo_gen.philo_num);
-	phinit(ph, &philo_gen);
 	i = -1;
+	phinit(ph, &philo_gen);
 	while(++i < philo_gen.philo_num)
 		pthread_create(&ph[i].thread, NULL, managment, &ph[i]);
 	while(1)
 		;
+	printf("ALL DONE");
 	usleep(100000);
 	return 0;
 }

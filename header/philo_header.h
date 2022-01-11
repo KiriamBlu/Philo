@@ -17,14 +17,17 @@
 # include <unistd.h>
 # include <stdio.h>
 # include <limits.h>
-#include <sys/time.h>
+# include <sys/time.h>
 
 typedef struct t_mutex
 {
 	int philo_num;
 	pthread_mutex_t	*forks;
 	struct timeval reftime;
-	unsigned long time;
+	int deathstatus;
+	unsigned long deathtime;
+	int timetosleep;
+	int timetoeat;
 }gen;
 
 typedef struct t_philo
@@ -33,6 +36,7 @@ typedef struct t_philo
 	pthread_mutex_t	*left;
 	pthread_mutex_t	*right;
 	unsigned long lasttime;
+	unsigned long phdeath;
 	int index;
 	gen lst;
 }philo;
