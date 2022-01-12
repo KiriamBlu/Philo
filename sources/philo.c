@@ -6,7 +6,7 @@
 /*   By: jsanfeli <jsanfeli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/10 14:50:35 by jsanfeli          #+#    #+#             */
-/*   Updated: 2022/01/12 13:41:12 by jsanfeli         ###   ########.fr       */
+/*   Updated: 2022/01/12 17:19:44 by jsanfeli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,57 +33,57 @@ unsigned long ft_atoi_special_l(const char *str)
 	return (nb);
 }
 
+int killswitch(philo *ph)
+{
+	int i;
+
+	i = -1;
+	if(ph->lst->deathtime < checktime(ph) && ph->lst->deathstatus == 0)
+	{
+		while(++i < ph->lst->philo_num)
+			pthread_join(ph->thread, ph->lst->threads[i]);
+
+	}
+}
+void pressftotalk(philo *ph, int i)
+{
+	pthread_mutex_lock(&ph->lst->wait);
+	else if (i == 0)
+		printf("Philo:%d is thinking %lu\n", ph->index, timestamp(ph));
+	else if (i == 1)
+		printf("Philo:%d left pick %lu\n", ph->index, timestamp(ph));
+	else if (i == 2)
+		printf("Philo:%d right pick %lu\n", ph->index, timestamp(ph));
+	else if (i == 3)
+		printf("Philo:%d is eating %lu\n", ph->index, timestamp(ph));
+	else if (i == 4)
+		printf("Philo:%d is sleeping %lu\n", ph->index, timestamp(ph));
+	else if (i == 5)
+		printf("Philo:%d is DEAD %lu\n", ph->index, checktime(ph));
+	pthread_mutex_unlock(&ph->lst->wait);
+}
+
 void *managment(void *prueba)
 {
 	philo *ph;
 	ph = (philo *)prueba;
-	ph->lasttime = ph->lst.firsttime;
+	ph->lasttime = ph->lst->firsttime;
 	if (ph->index % 2 == 0)
 			usleep(100);
 	while(1)
 	{
-		printf("Philo:%d is thinking %lu\n", ph->index, timestamp(ph));
+		pressftotalk(ph, 0);
 		pthread_mutex_lock(ph->left);
-		printf("Philo:%d left pick %lu\n", ph->index, timestamp(ph));
-		if (ph->lst.deathtime <= checktime(ph))
-		{
-			ph->lst.deathstatus = 1;
-			printf("Philo:%d is DEAD after pick left: %lu\n", ph->index, checktime(ph));
-		}
-		if (ph->lst.deathstatus != 0)
-			return(0);
+		pressftotalk(ph, 1);
 		pthread_mutex_lock(ph->right);
-		printf("Philo:%d right pick %lu\n", ph->index, timestamp(ph));
-		if (ph->lst.deathtime <= checktime(ph))
-		{
-			ph->lst.deathstatus = 1;
-			printf("Philo:%d is DEAD after pick right: %lu\n", ph->index, checktime(ph));
-		}
-		if (ph->lst.deathstatus != 0)
-			return(0);
+		pressftotalk(ph, 2);
 		getupdatetime(ph);
-		printf("Philo:%d is eating %lu\n", ph->index, timestamp(ph));
-		myusleep(ph->lst.timetoeat, ph);
-		if (ph->lst.deathtime <= checktime(ph))
-		{
-			ph->lst.deathstatus = 1;
-			printf("Philo:%d is DEAD after eating: %lu\n", ph->index, checktime(ph));
-		}
-		if (ph->lst.deathstatus != 0)
-			return(0);
+		pressftotalk(ph, 3);
+		myusleep(ph->lst->timetoeat, ph);
 		pthread_mutex_unlock(ph->left);
-		printf("Philo:%d left drop %lu\n", ph->index, timestamp(ph));
 		pthread_mutex_unlock(ph->right);
-		printf("Philo:%d right drop %lu\n", ph->index, timestamp(ph));
-		printf("Philo:%d is sleeping %lu\n", ph->index, timestamp(ph));
-		myusleep(ph->lst.timetosleep, ph);
-		if (ph->lst.deathtime <= checktime(ph))
-		{
-			ph->lst.deathstatus = 1;
-			printf("Philo:%d is DEAD after sleeping: %lu\n", ph->index, checktime(ph));
-		}
-		if (ph->lst.deathstatus != 0)
-			return(0);
+		pressftotalk(ph, 4);
+		myusleep(ph->lst->timetosleep, ph);
 	}
 	return (0);
 }
@@ -100,17 +100,17 @@ void phinit(philo *ph, gen *philo_gen)
 		pthread_mutex_init(&philo_gen->forks[i + 1], NULL);
 		ph[i].left = &philo_gen->forks[i];
 		ph[i].right = &philo_gen->forks[i + 1];
-		ph[i].lst = *philo_gen;
+		ph[i].lst = philo_gen;
 		ph[i].index = i;
-		ph[i].thread = malloc(sizeof(pthread_t) * 1);
+		ph[i].thread = philo_gen->threads[i];
 		i++;
 	}
 	pthread_mutex_init(&philo_gen->forks[philo_gen->philo_num - 1], NULL);
 	ph[i].left = &philo_gen->forks[i];
 	ph[i].right = &philo_gen->forks[0];
-	ph[i].lst = *philo_gen;
+	ph[i].lst = philo_gen;
 	ph[i].index = i;
-	ph[i].thread = malloc(sizeof(pthread_t) * 1);
+	ph[i].thread = philo_gen->threads[i];
 }
 
 int main(int argc, char const *argv[])
@@ -128,16 +128,20 @@ int main(int argc, char const *argv[])
 	philo_gen.deathtime = (ft_atoi_special_l(argv[2]));
 	philo_gen.timetoeat = (ft_atoi_special_l(argv[3]));
 	philo_gen.timetosleep = (ft_atoi_special_l(argv[4]));
+	pthread_mutex_init(&philo_gen.wait, NULL);
 	philo_gen.deathstatus = 0;
 	gettimeofday(&philo_gen.reftime, NULL);
 	philo_gen.firsttime = ((unsigned long)philo_gen.reftime.tv_sec * 1000) + ((unsigned long)philo_gen.reftime.tv_usec / 1000);
 	philo_gen.forks = malloc(sizeof(pthread_mutex_t) * philo_gen.philo_num);
+	philo_gen.threads = malloc(sizeof(pthread_t) * philo_gen.philo_num);
 	ph = malloc(sizeof(philo) * philo_gen.philo_num);
 	i = -1;
 	phinit(ph, &philo_gen);
-	while(++i < philo_gen.philo_num)
+	while (++i < philo_gen.philo_num)
 		pthread_create(&ph[i].thread, NULL, managment, &ph[i]);
-	while(1)
-		;
+	while (1)
+		if (ph->lst->deathstatus != 0)
+			break;
+	pthread_mutex_unlock(&ph->lst->wait);
 	return 0;
 }

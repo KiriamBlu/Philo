@@ -6,7 +6,7 @@
 /*   By: jsanfeli <jsanfeli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/02 12:30:15 by jsanfeli          #+#    #+#             */
-/*   Updated: 2022/01/12 13:46:41 by jsanfeli         ###   ########.fr       */
+/*   Updated: 2022/01/12 17:20:15 by jsanfeli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,9 @@ typedef struct t_mutex
 {
 	int philo_num;
 	pthread_mutex_t	*forks;
-	struct timeval reftime;
-	int deathstatus;
+	pthread_t *threads;
+	pthread_mutex_t wait;
+	struct timeval reftime
 	unsigned long deathtime;
 	unsigned long firsttime;
 	unsigned long timetosleep;
@@ -35,12 +36,13 @@ typedef struct t_mutex
 typedef struct t_philo
 {
 	pthread_t thread;
+	int deathstatus;
 	pthread_mutex_t	*left;
 	pthread_mutex_t	*right;
 	unsigned long lasttime;
 	unsigned long phdeath;
 	int index;
-	gen lst;
+	gen *lst;
 }philo;
 
 unsigned long	timestamp(philo *ph);
