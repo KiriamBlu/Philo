@@ -2,6 +2,7 @@ NAME := philo
 LIBFT_NAME = libft.a
 
 SRCS =  ./sources/philo.c \
+		./sources/myusleep.c \
 
 OBJS = ${SRCS:.c=.o}
 

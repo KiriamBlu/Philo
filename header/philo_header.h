@@ -6,7 +6,7 @@
 /*   By: jsanfeli <jsanfeli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/02 12:30:15 by jsanfeli          #+#    #+#             */
-/*   Updated: 2022/01/11 15:45:00 by jsanfeli         ###   ########.fr       */
+/*   Updated: 2022/01/12 13:46:41 by jsanfeli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdio.h>
 # include <limits.h>
 # include <sys/time.h>
+# include <pthread.h>
 
 typedef struct t_mutex
 {
@@ -27,8 +28,8 @@ typedef struct t_mutex
 	int deathstatus;
 	unsigned long deathtime;
 	unsigned long firsttime;
-	int timetosleep;
-	int timetoeat;
+	unsigned long timetosleep;
+	unsigned long timetoeat;
 }gen;
 
 typedef struct t_philo
@@ -41,6 +42,11 @@ typedef struct t_philo
 	int index;
 	gen lst;
 }philo;
+
+unsigned long	timestamp(philo *ph);
+void	getupdatetime(philo *ph);
+unsigned long	checktime(philo *ph);
+void	myusleep(unsigned long microsec, philo *ph);
 
 
 #endif
