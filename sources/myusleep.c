@@ -6,7 +6,7 @@
 /*   By: jsanfeli <jsanfeli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 13:19:56 by jsanfeli          #+#    #+#             */
-/*   Updated: 2022/01/12 16:32:06 by jsanfeli         ###   ########.fr       */
+/*   Updated: 2022/01/13 16:47:35 by jsanfeli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	myusleep(unsigned long microsec, philo *ph)
 	k = i + microsec;
 	while(i < k)
 	{
-		usleep(100);
+		usleep(90);
 		gettimeofday(&ph->lst->reftime, NULL);
 		i = ((unsigned long)ph->lst->reftime.tv_sec * 1000) + ((unsigned long)ph->lst->reftime.tv_usec / 1000);
 	}

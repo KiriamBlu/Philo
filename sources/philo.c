@@ -6,7 +6,7 @@
 /*   By: jsanfeli <jsanfeli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/10 14:50:35 by jsanfeli          #+#    #+#             */
-/*   Updated: 2022/01/13 14:04:00 by jsanfeli         ###   ########.fr       */
+/*   Updated: 2022/01/13 17:08:43 by jsanfeli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,9 @@ void sleeping(philo *ph)
 
 void *managment(void *prueba)
 {
+	int i;
+
+	i = 0;
 	philo *ph;
 	ph = (philo *)prueba;
 	ph->lasttime = ph->lst->firsttime;
@@ -81,6 +84,11 @@ void *managment(void *prueba)
 			usleep(100);
 	while(ph->lst->running == 1)
 	{
+		if (i == 0)
+		{
+			getupdatetime(ph);
+			i = 1;
+		}
 		think(ph);
 		getupdatetime(ph);
 		if(ph->lst->running == 1)
@@ -121,7 +129,7 @@ void phinit(philo *ph, gen *philo_gen)
 	ph[i].thread = philo_gen->threads[i];
 }
 
-void deathswitch(philo *ph, int philo_num)
+void deathswitch(philo *ph, int philo_num) //ESTA MAL ESTO
 {
 	int i;
 	int k;
@@ -164,12 +172,13 @@ int main(int argc, char const *argv[])
 	philo_gen.firsttime = ((unsigned long)philo_gen.reftime.tv_sec * 1000) + ((unsigned long)philo_gen.reftime.tv_usec / 1000);
 	philo_gen.forks = malloc(sizeof(pthread_mutex_t) * philo_gen.philo_num);
 	philo_gen.threads = malloc(sizeof(pthread_t) * philo_gen.philo_num);
-	philo_gen.running = 1;
+	philo_gen.running = 0;
 	ph = malloc(sizeof(philo) * philo_gen.philo_num);
 	phinit(ph, &philo_gen);
 	i = -1;
 	while (++i < philo_gen.philo_num)
 		pthread_create(&ph[i].thread, NULL, managment, &ph[i]);
+	philo_gen.running = 1;
 	deathswitch(ph, philo_gen.philo_num);
 	return 0;
 }
