@@ -6,7 +6,7 @@
 /*   By: jsanfeli <jsanfeli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/02 12:30:15 by jsanfeli          #+#    #+#             */
-/*   Updated: 2022/01/12 17:20:15 by jsanfeli         ###   ########.fr       */
+/*   Updated: 2022/01/13 13:40:00 by jsanfeli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ typedef struct t_mutex
 	pthread_mutex_t	*forks;
 	pthread_t *threads;
 	pthread_mutex_t wait;
-	struct timeval reftime
+	int running;
+	struct timeval reftime;
 	unsigned long deathtime;
 	unsigned long firsttime;
 	unsigned long timetosleep;
