@@ -26,8 +26,8 @@ void	pressftotalk(t_philo *philo, int i)
 	{
 		philo->eats++;
 		printf(COLOR_MAGENTA
-			"%lu %d is eating #%d\n" COLOR_RESET, timestamp(philo),
-			philo->index, philo->eats);
+			"%lu %d is eating\n" COLOR_RESET, timestamp(philo),
+			philo->index);
 	}
 	else if (i == 4 && philo->lst->running == 1)
 		printf(COLOR_CYAN
@@ -49,7 +49,7 @@ void	*managment_2(void *prueba)
 	philo->lst->firsttime = philo->lasttime;
 	while (philo->lst->running == 1 && philo->eats < (int)philo->lst->eattime)
 	{
-		if(philo->index % 2 == 0)
+		if(philo->index % 2 != 0)
 			myusleep(10, philo);
 		pickfork(philo);
 		getupdatetime(philo);
@@ -75,7 +75,7 @@ void	*managment_1(void *prueba)
 	philo->lst->firsttime = philo->lasttime;
 	while (philo->lst->running == 1)
 	{
-		if(philo->index % 2 == 0)
+		if(philo->index % 2 != 0)
 			myusleep(10, philo);
 		pickfork(philo);
 		getupdatetime(philo);
