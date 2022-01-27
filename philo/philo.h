@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jporta <jporta@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jsanfeli <jsanfeli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/17 17:31:20 by jporta            #+#    #+#             */
-/*   Updated: 2022/01/26 18:24:26 by jporta           ###   ########.fr       */
+/*   Created: 2022/01/17 17:31:20 by jsanfeli          #+#    #+#             */
+/*   Updated: 2022/01/26 18:24:26 by jsanfeli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ typedef struct s_philo
 	int				deathstatus;
 	pthread_mutex_t	*mutex_left;
 	pthread_mutex_t	*mutex_right;
+	int				*fork_left;
+	int				*fork_right;
 	int				eats;
 	unsigned long	lasttime;
 	unsigned long	phdeath;
@@ -71,10 +73,11 @@ unsigned long	ft_atoi_special_l(const char *str);
 int				ft_atoi_special(const char *str);
 t_gen			structinit(char **argv, int argc);
 void			sleeping(t_philo *philo);
-void			think(t_philo *philo);
+void			pickfork(t_philo *philo);
 void			pressftotalk(t_philo *philo, int i);
 void			ft_finthread(t_gen *gen);
 int				ft_errors(int argc, char **argv);
 void			phinit(t_philo *philo, t_gen *gen);
+void			*ft_calloc(size_t count, size_t size);
 
 #endif

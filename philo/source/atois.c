@@ -3,14 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   atois.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jporta <jporta@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jsanfeli <jsanfeli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/17 17:37:09 by jporta            #+#    #+#             */
-/*   Updated: 2022/01/26 19:12:15 by jporta           ###   ########.fr       */
+/*   Created: 2022/01/17 17:37:09 by jsanfeli          #+#    #+#             */
+/*   Updated: 2022/01/26 19:12:15 by jsanfeli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
+
+void	forkinit(t_philo *philo, t_gen *gen, int i)
+{
+	philo[i].fork_left = &gen->forks[i];
+	if (i != gen->philo_num - 1)
+		philo[i].fork_right = &gen->forks[i + 1];
+	else
+		philo[i].fork_right = &gen->forks[0];
+}
 
 void	phinit(t_philo *philo, t_gen *gen)
 {
@@ -20,6 +29,7 @@ void	phinit(t_philo *philo, t_gen *gen)
 	while (i < gen->philo_num)
 	{
 		pthread_mutex_init(&gen->mutex_forks[i], NULL);
+		gen->forks[i] = 0;
 		i++;
 	}
 	i = 0;
@@ -30,12 +40,14 @@ void	phinit(t_philo *philo, t_gen *gen)
 			philo[i].mutex_right = &gen->mutex_forks[i + 1];
 		else
 			philo[i].mutex_right = &gen->mutex_forks[0];
+		forkinit(philo, gen, i);
 		philo[i].lst = gen;
 		philo[i].food = 0;
 		philo[i].lasttime = philo[i].lst->firsttime;
 		philo[i].index = i + 1;
 		philo[i].deathstatus = 0;
 		philo[i].thread = gen->threads[i];
+		philo[i].eats = 0;
 		i++;
 	}
 }

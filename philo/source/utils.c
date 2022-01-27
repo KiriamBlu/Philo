@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jporta <jporta@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jsanfeli <jsanfeli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/17 18:40:34 by jporta            #+#    #+#             */
-/*   Updated: 2022/01/26 18:12:00 by jporta           ###   ########.fr       */
+/*   Created: 2022/01/17 18:40:34 by jsanfeli          #+#    #+#             */
+/*   Updated: 2022/01/26 18:12:00 by jsanfeli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	ft_finthread(t_gen *gen)
 		pthread_mutex_destroy(&gen->mutex_forks[i]);
 	pthread_mutex_destroy(&gen->wait);
 	free(gen->threads);
+	free(gen->forks);
 }
 
 int	ft_errors(int argc, char **argv)
@@ -69,18 +70,34 @@ void	sleeping(t_philo *philo)
 {
 	if (philo->lst->running == 1)
 	{
-		pthread_mutex_unlock(philo->mutex_left);
-		pthread_mutex_unlock(philo->mutex_right);
+		philo->fork_right = 0;
+		philo->fork_left = 0;
 		pressftotalk(philo, 4);
 	}
 }
 
-void	think(t_philo *philo)
+void	pickfork(t_philo *philo)
 {
-	pthread_mutex_lock(philo->mutex_right);
-	if (philo->lst->running == 1)
-		pressftotalk(philo, 1);
-	pthread_mutex_lock(philo->mutex_left);
-	if (philo->lst->running == 1)
-		pressftotalk(philo, 1);
+	int i;
+
+	i = 0;
+	while(i < 2)
+	{
+		pthread_mutex_lock(philo->mutex_right);
+		if (philo->lst->running == 1 && philo->fork_right == 0)
+		{
+			philo->fork_right += 1;
+			pressftotalk(philo, 1);
+			i++;
+		}
+		pthread_mutex_unlock(philo->mutex_right);
+		pthread_mutex_lock(philo->mutex_left);
+		if (philo->lst->running == 1)
+		{
+			philo->fork_left += 1;
+			pressftotalk(philo, 1);
+			i++;
+		}
+		pthread_mutex_unlock(philo->mutex_left);
+	}
 }

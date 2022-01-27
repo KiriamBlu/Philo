@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jporta <jporta@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jsanfeli <jsanfeli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/17 17:31:47 by jporta            #+#    #+#             */
-/*   Updated: 2022/01/26 18:24:31 by jporta           ###   ########.fr       */
+/*   Created: 2022/01/17 17:31:47 by jsanfeli          #+#    #+#             */
+/*   Updated: 2022/01/26 18:24:31 by jsanfeli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	*managment_2(void *prueba)
 	{
 		if (philo->index % 2 == 0)
 			myusleep(1, philo);
-		think(philo);
+		pickfork(philo);
 		getupdatetime(philo);
 		if (philo->lst->running == 1)
 			pressftotalk(philo, 3);
@@ -75,7 +75,7 @@ void	*managment_1(void *prueba)
 	{
 		if (philo->index % 2 == 0)
 			myusleep(1, philo);
-		think(philo);
+		pickfork(philo);
 		getupdatetime(philo);
 		if (philo->lst->running == 1)
 			pressftotalk(philo, 3);
@@ -83,7 +83,7 @@ void	*managment_1(void *prueba)
 		sleeping(philo);
 		myusleep(philo->lst->timetosleep, philo);
 		if (philo->lst->running == 1)
-		pressftotalk(philo, 0);
+			pressftotalk(philo, 0);
 	}
 	return (0);
 }
