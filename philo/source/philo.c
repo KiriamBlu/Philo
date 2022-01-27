@@ -45,6 +45,7 @@ void	*managment_2(void *prueba)
 	philo = (t_philo *)prueba;
 	philo->lasttime = philo->lst->firsttime;
 	myusleep(100, philo);
+	getupdatetime(philo);
 	while (philo->lst->running == 1 && philo->eats < (int)philo->lst->eattime)
 	{
 		if (philo->index % 2 == 0)
@@ -69,6 +70,7 @@ void	*managment_1(void *prueba)
 	philo = (t_philo *)prueba;
 	philo->lasttime = philo->lst->firsttime;
 	myusleep(100, philo);
+	getupdatetime(philo);
 	while (philo->lst->running == 1)
 	{
 		if (philo->index % 2 == 0)

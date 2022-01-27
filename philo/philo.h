@@ -37,10 +37,10 @@ typedef struct s_gen
 {
 	int				philo_num;
 	pthread_mutex_t	*mutex_forks;
+	int				*forks;
 	pthread_t		*threads;
 	pthread_mutex_t	wait;
 	int				running;
-	int				count;
 	unsigned long	eattime;
 	struct timeval	reftime;
 	unsigned long	deathtime;

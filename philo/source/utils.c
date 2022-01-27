@@ -54,17 +54,13 @@ t_gen	structinit(char **argv, int argc)
 		.timetosleep = (ft_atoi_special_l(argv[4])), .running = 0
 	};
 	if (argc == 6)
-	{
-		gen.count = 0;
 		gen.eattime = (ft_atoi_special_l(argv[5]));
-	}
 	pthread_mutex_init(&gen.wait, NULL);
 	gettimeofday(&gen.reftime, NULL);
 	gen.firsttime = ((unsigned long)gen.reftime.tv_sec * 1000)
 		+ ((unsigned long)gen.reftime.tv_usec / 1000);
-	gen.firsttime -= 100;
-	gen.mutex_forks = (pthread_mutex_t *)
-		malloc(sizeof(pthread_mutex_t) * gen.philo_num);
+	gen.forks = (int *)malloc(gen.philo_num);
+	gen.mutex_forks = (pthread_mutex_t *)malloc(gen.philo_num);
 	gen.threads = (pthread_t *)malloc(sizeof(pthread_t) * gen.philo_num);
 	return (gen);
 }
