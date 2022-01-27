@@ -14,11 +14,13 @@
 
 void	forkinit(t_philo *philo, t_gen *gen, int i)
 {
-	philo[i].fork_left = &gen->forks[i];
+	philo[i].fork_left = i;
 	if (i != gen->philo_num - 1)
-		philo[i].fork_right = &gen->forks[i + 1];
+		philo[i].fork_right = (i + 1);
 	else
-		philo[i].fork_right = &gen->forks[0];
+		philo[i].fork_right = 0;
+	philo[i].eats = 0;
+	philo[i].count = 0;
 }
 
 void	phinit(t_philo *philo, t_gen *gen)
@@ -47,7 +49,6 @@ void	phinit(t_philo *philo, t_gen *gen)
 		philo[i].index = i + 1;
 		philo[i].deathstatus = 0;
 		philo[i].thread = gen->threads[i];
-		philo[i].eats = 0;
 		i++;
 	}
 }

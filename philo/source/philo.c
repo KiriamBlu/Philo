@@ -46,10 +46,11 @@ void	*managment_2(void *prueba)
 	philo->lasttime = philo->lst->firsttime;
 	myusleep(100, philo);
 	getupdatetime(philo);
+	philo->lst->firsttime = philo->lasttime;
 	while (philo->lst->running == 1 && philo->eats < (int)philo->lst->eattime)
 	{
-		if (philo->index % 2 == 0)
-			myusleep(1, philo);
+		if(philo->index % 2 == 0)
+			myusleep(10, philo);
 		pickfork(philo);
 		getupdatetime(philo);
 		if (philo->lst->running == 1)
@@ -71,10 +72,11 @@ void	*managment_1(void *prueba)
 	philo->lasttime = philo->lst->firsttime;
 	myusleep(100, philo);
 	getupdatetime(philo);
+	philo->lst->firsttime = philo->lasttime;
 	while (philo->lst->running == 1)
 	{
-		if (philo->index % 2 == 0)
-			myusleep(1, philo);
+		if(philo->index % 2 == 0)
+			myusleep(10, philo);
 		pickfork(philo);
 		getupdatetime(philo);
 		if (philo->lst->running == 1)

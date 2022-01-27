@@ -70,33 +70,32 @@ void	sleeping(t_philo *philo)
 {
 	if (philo->lst->running == 1)
 	{
-		philo->fork_right = 0;
-		philo->fork_left = 0;
+		philo->lst->forks[philo->fork_right] = 0;
+		philo->lst->forks[philo->fork_left] = 0;
+		philo->count = 0;
 		pressftotalk(philo, 4);
 	}
 }
 
 void	pickfork(t_philo *philo)
 {
-	int i;
-
-	i = 0;
-	while(i < 2)
+	
+	while(philo->count < 2)
 	{
 		pthread_mutex_lock(philo->mutex_right);
-		if (philo->lst->running == 1 && philo->fork_right == 0)
+		if (philo->lst->running == 1 && philo->lst->forks[philo->fork_right] == 0)
 		{
-			philo->fork_right += 1;
+			philo->lst->forks[philo->fork_right] = 1;
 			pressftotalk(philo, 1);
-			i++;
+			philo->count++;
 		}
 		pthread_mutex_unlock(philo->mutex_right);
 		pthread_mutex_lock(philo->mutex_left);
-		if (philo->lst->running == 1)
+		if (philo->lst->running == 1 && philo->lst->forks[philo->fork_left] == 0)
 		{
-			philo->fork_left += 1;
+			philo->lst->forks[philo->fork_left] = 1;
 			pressftotalk(philo, 1);
-			i++;
+			philo->count++;
 		}
 		pthread_mutex_unlock(philo->mutex_left);
 	}

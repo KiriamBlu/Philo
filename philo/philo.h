@@ -36,6 +36,7 @@
 typedef struct s_gen
 {
 	int				philo_num;
+	int				i;
 	pthread_mutex_t	*mutex_forks;
 	int				*forks;
 	pthread_t		*threads;
@@ -53,11 +54,12 @@ typedef struct s_philo
 {
 	int				food;
 	pthread_t		thread;
+	int				count;
 	int				deathstatus;
 	pthread_mutex_t	*mutex_left;
 	pthread_mutex_t	*mutex_right;
-	int				*fork_left;
-	int				*fork_right;
+	int				fork_left;
+	int				fork_right;
 	int				eats;
 	unsigned long	lasttime;
 	unsigned long	phdeath;
@@ -78,6 +80,5 @@ void			pressftotalk(t_philo *philo, int i);
 void			ft_finthread(t_gen *gen);
 int				ft_errors(int argc, char **argv);
 void			phinit(t_philo *philo, t_gen *gen);
-void			*ft_calloc(size_t count, size_t size);
 
 #endif

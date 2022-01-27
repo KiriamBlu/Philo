@@ -19,7 +19,7 @@ unsigned long	timestamp(t_philo *philo)
 	gettimeofday(&philo->lst->reftime, NULL);
 	i = ((unsigned long)philo->lst->reftime.tv_sec * 1000)
 		+ ((unsigned long)philo->lst->reftime.tv_usec / 1000);
-	return (i - philo->lst->firsttime - 100);
+	return (i - philo->lst->firsttime);
 }
 
 void	getupdatetime(t_philo *philo)
@@ -54,7 +54,7 @@ void	myusleep(unsigned long microsec, t_philo *philo)
 	k = i + microsec;
 	while (i < k)
 	{
-		usleep(100);
+		usleep(50);
 		gettimeofday(&philo->lst->reftime, NULL);
 		i = ((unsigned long)philo->lst->reftime.tv_sec * 1000)
 			+ ((unsigned long)philo->lst->reftime.tv_usec / 1000);
