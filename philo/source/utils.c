@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jporta <jporta@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jsanfeli <jsanfeli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 18:40:34 by jsanfeli          #+#    #+#             */
-/*   Updated: 2022/02/01 19:23:27 by jporta           ###   ########.fr       */
+/*   Updated: 2022/02/03 16:53:55 by jsanfeli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,11 @@ void	ft_finthread(t_gen *gen)
 
 	i = -1;
 	while (++i < gen->philo_num)
+	{
+		pthread_mutex_unlock(&gen->mutex_forks[i]);
 		pthread_mutex_destroy(&gen->mutex_forks[i]);
+	}
+	pthread_mutex_unlock(&gen->wait);
 	pthread_mutex_destroy(&gen->wait);
 	free(gen->forks);
 	free(gen->threads);
@@ -76,7 +80,7 @@ void	sleeping(t_philo *philo)
 
 void	pickfork(t_philo *philo)
 {
-	while (philo->count < 2)
+	while (philo->count < 2 && philo->lst->running == 1)
 	{
 		pthread_mutex_lock(philo->mutex_right);
 		if (philo->lst->running == 1

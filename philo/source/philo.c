@@ -6,7 +6,7 @@
 /*   By: jsanfeli <jsanfeli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 17:31:47 by jsanfeli          #+#    #+#             */
-/*   Updated: 2022/02/03 16:12:39 by jsanfeli         ###   ########.fr       */
+/*   Updated: 2022/02/03 17:01:39 by jsanfeli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ void	pressftotalk(t_philo *philo, int i)
 	{
 		philo->eats++;
 		printf(COLOR_MAGENTA
-			"%lu %d is eating #%d\n" COLOR_RESET, timestamp(philo),
-			philo->index, philo->eats);
+			"%lu %d is eating\n" COLOR_RESET, timestamp(philo),
+			philo->index);
 	}
 	else if (i == 4 && philo->lst->running == 1)
 		printf(COLOR_CYAN
@@ -47,7 +47,7 @@ void	*managment_2(void *prueba)
 	philo->lst->firsttime = philo->lasttime;
 	myusleep(100, philo);
 	getupdatetime(philo);
-	if (philo->index % 2 != 0)
+	if (philo->index % 2 == 0)
 		myusleep(10, philo);
 	while (philo->lst->running == 1 && philo->eats < (int)philo->lst->eattime)
 	{
@@ -75,7 +75,7 @@ void	*managment_1(void *prueba)
 	philo->lst->firsttime = philo->lasttime;
 	myusleep(100, philo);
 	getupdatetime(philo);
-	if (philo->index % 2 != 0)
+	if (philo->index % 2 == 0)
 		myusleep(philo->lst->timetosleep, philo);
 	while (philo->lst->running == 1)
 	{
@@ -149,6 +149,6 @@ int	main(int argc, char **argv)
 	i = -1;
 	while  (++i < gen.philo_num)
 		pthread_join(philo[i].thread, NULL);
-	ft_finthread (&gen);
+ 	ft_finthread (&gen);
 	return (0);
 }
