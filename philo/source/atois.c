@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   atois.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsanfeli <jsanfeli@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jporta <jporta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 17:37:09 by jsanfeli          #+#    #+#             */
-/*   Updated: 2022/01/26 19:12:15 by jsanfeli         ###   ########.fr       */
+/*   Updated: 2022/02/01 18:01:39 by jporta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,11 @@ void	phinit(t_philo *philo, t_gen *gen)
 {
 	int	i;
 
-	i = 0;
-	while (i < gen->philo_num)
+	i = -1;
+	while (++i < gen->philo_num)
 	{
 		pthread_mutex_init(&gen->mutex_forks[i], NULL);
 		gen->forks[i] = 0;
-		i++;
 	}
 	i = 0;
 	while (i < gen->philo_num)

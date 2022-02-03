@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsanfeli <jsanfeli@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jporta <jporta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/17 18:40:34 by jsanfeli          #+#    #+#             */
-/*   Updated: 2022/01/26 18:12:00 by jsanfeli         ###   ########.fr       */
+/*   Updated: 2022/02/01 19:23:27 by jporta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ void	ft_finthread(t_gen *gen)
 	while (++i < gen->philo_num)
 		pthread_mutex_destroy(&gen->mutex_forks[i]);
 	pthread_mutex_destroy(&gen->wait);
-	free(gen->threads);
 	free(gen->forks);
+	free(gen->threads);
 }
 
 int	ft_errors(int argc, char **argv)
@@ -36,10 +36,7 @@ int	ft_errors(int argc, char **argv)
 	{
 		aux = ft_atoi_special(argv[i]);
 		if (aux > 2147483648 || aux <= 0)
-		{
-			printf("AQUI\n");
 			return (1);
-		}
 	}
 	return (0);
 }
@@ -79,22 +76,25 @@ void	sleeping(t_philo *philo)
 
 void	pickfork(t_philo *philo)
 {
-	
-	while(philo->count < 2)
+	while (philo->count < 2)
 	{
 		pthread_mutex_lock(philo->mutex_right);
-		if (philo->lst->running == 1 && philo->lst->forks[philo->fork_right] == 0)
+		if (philo->lst->running == 1
+			&& philo->lst->forks[philo->fork_right] == 0)
 		{
 			philo->lst->forks[philo->fork_right] = 1;
 			pressftotalk(philo, 1);
+			usleep(100);
 			philo->count++;
 		}
 		pthread_mutex_unlock(philo->mutex_right);
 		pthread_mutex_lock(philo->mutex_left);
-		if (philo->lst->running == 1 && philo->lst->forks[philo->fork_left] == 0)
+		if (philo->lst->running == 1
+			&& philo->lst->forks[philo->fork_left] == 0)
 		{
 			philo->lst->forks[philo->fork_left] = 1;
 			pressftotalk(philo, 1);
+			usleep(100);
 			philo->count++;
 		}
 		pthread_mutex_unlock(philo->mutex_left);
