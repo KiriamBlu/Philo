@@ -4,6 +4,7 @@ SRCS =  ./source/philo.c \
 		./source/myusleep.c \
 		./source/atois.c \
 		./source/utils.c \
+		./source/philo2.c \
 
 OBJS = ${SRCS:.c=.o}
 
@@ -13,15 +14,17 @@ EXE_DIR = ./
 
 CC := cc 
 GCC := gcc 
-CFLAGS := -Wall -Wextra #-Werror
+CFLAGS := -Wall -Wextra -Werror
 MV := mv -f
 RM := rm -f
+
+
 
 %.o: %.c
 	$(GCC) $(CFLAGS) -c $< -I $(INC_DIR) -o $@ 
 
 $(NAME):  $(OBJS)
-	gcc ./source/*.o -o philo
+	gcc ./source/*.o  -o philo
 
 
 

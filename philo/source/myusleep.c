@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   myusleep.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jporta <jporta@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jsanfeli <jsanfeli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/12 13:19:56 by jsanfeli          #+#    #+#             */
-/*   Updated: 2022/02/01 18:29:16 by jporta           ###   ########.fr       */
+/*   Updated: 2022/03/01 20:54:32 by jsanfeli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	myusleep(unsigned long microsec, t_philo *philo)
 	k = i + microsec;
 	while (i < k)
 	{
-		usleep(50);
+		usleep(200);
 		gettimeofday(&philo->lst->reftime, NULL);
 		i = ((unsigned long)philo->lst->reftime.tv_sec * 1000)
 			+ ((unsigned long)philo->lst->reftime.tv_usec / 1000);
